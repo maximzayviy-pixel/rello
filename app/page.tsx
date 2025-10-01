@@ -9,60 +9,41 @@ declare global { interface Window { Telegram?: any } }
 export default function Home() {
   const [initData, setInitData] = useState<string>('');
   const [me, setMe] = useState<any>(null);
-  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string>('');
 
   useEffect(() => {
     const tg = window.Telegram?.WebApp;
     const data = tg?.initData || '';
     setInitData(data);
     tg?.expand?.();
+    if (!data) { setError('Открой через Telegram: t.me/' + (process.env.NEXT_PUBLIC_WEBAPP_BOT||'your_bot') + '/app'); return; }
     fetch('/api/auth/verify', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ initData: data }) })
-      .then(r => r.json()).then(j => j.ok && setMe(j.user));
+      .then(async r => ({ ok: r.ok, body: await r.json() }))
+      .then(j => { if (j.ok && j.body.ok) setMe(j.body.user); else setError('Не удалось авторизоваться. Запусти мини‑апп внутри Telegram.'); })
+      .catch(() => setError('Проблема соединения'));
   }, []);
-
-  async function onTap() {
-    if (!initData || loading) return;
-    setLoading(true);
-    try {
-      const r = await fetch('/api/tap', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ initData }) });
-      const j = await r.json();
-      if (j.ok) setMe(j.user);
-    } finally {
-      setLoading(false);
-    }
-  }
 
   async function createInvoice(amount_xtr = 100) {
     if (!initData) return;
     const r = await fetch('/api/invoice/create', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ initData, amount_xtr }) });
     const j = await r.json();
-    if (!j.ok) return;
     const tg = window.Telegram?.WebApp;
-    const invoiceUrl = j?.link || j?.invoice?.invoice_url || j?.invoice?.link || j?.invoice?.url;
-    const slug = j?.invoice?.slug || j?.invoice?.provider_data || j?.invoice?.start_parameter;
-    // Открываем самым совместимым способом
-    if (tg?.openInvoice && (invoiceUrl || slug)) {
-      try { await tg.openInvoice(slug || invoiceUrl); return; } catch {}
-    }
-    if (invoiceUrl) window.open(invoiceUrl, '_blank');
+    const url = j?.link || j?.invoice?.invoice_url || j?.invoice?.link || j?.invoice?.url;
+    if (url && tg?.openInvoice) { try { await tg.openInvoice(url); return; } catch {} }
+    if (url) window.open(url, '_blank');
   }
 
   return (
     <AppShell>
       <div className="space-y-4">
-        {/* Профиль */}
         <div className="rounded-2xl border p-4">
           <div className="text-sm opacity-70">профиль</div>
-          <div className="mt-1 text-base">
-            {me?.first_name || 'Гость'} {me?.last_name || ''}{' '}
-            <span className="opacity-60">(id: {me?.tg_id || '—'})</span>
-          </div>
+          <div className="mt-1 text-base">{me ? (<>{me.first_name} {me.last_name||''} <span className="opacity-60">(id: {me.tg_id})</span></>) : '—'}</div>
+          {!!error && <div className="mt-2 text-sm text-red-600">{error}</div>}
         </div>
 
-        {/* Питомец: кликаем по КОРГИ */}
-        <Pet user={me} onTap={onTap} />
+        <Pet user={me} />
 
-        {/* Баланс и быстрые пополнения */}
         <div className="rounded-2xl border p-4">
           <div className="text-sm opacity-70">баланс</div>
           <div className="text-2xl font-bold">{me?.balance_xtr ?? 0} XTR</div>
@@ -73,8 +54,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Резервная кнопка (если надо) */}
-        <TapZone onTap={onTap} disabled={!me || loading} />
+        <TapZone initData={initData} onUpdate={setMe} />
       </div>
     </AppShell>
   );

@@ -1,11 +1,11 @@
 import crypto from 'crypto';
 
 const BOT_TOKEN = process.env.BOT_TOKEN!;
-const SECRET = process.env.WEBAPP_SECRET || BOT_TOKEN; // per Telegram docs, HMAC SHA-256
+const SECRET = process.env.WEBAPP_SECRET || BOT_TOKEN; // HMAC key seed
 
-// ✅ Проверка initData из Telegram WebApp (HMAC-SHA256)
+// Verify Telegram WebApp initData (HMAC-SHA256)
 export function verifyInitData(initData: string) {
-  const url = new URLSearchParams(initData);
+  const url = new URLSearchParams(initData || '');
   const hash = url.get('hash');
   if (!hash) return null;
   url.delete('hash');
@@ -20,27 +20,36 @@ export function verifyInitData(initData: string) {
   return user ? JSON.parse(user) : null;
 }
 
-// ⭐ Stars/XTR: provider_token не нужен
+// Stars (XTR): no provider_token
 export async function createInvoiceLink(opts: {
-  title: string; description: string; payload: string;
-  currency: 'XTR'; prices: { label: string; amount: number }[];
+  title: string;
+  description: string;
+  payload: string;
+  currency: 'XTR';
+  prices: { label: string; amount: number }[];
 }) {
   const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/createInvoiceLink`, {
-    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ ...opts })
   });
   const data = await res.json();
   if (!data.ok) throw new Error(data.description || 'createInvoiceLink failed');
-  return data.result as string; // link
+  return data.result as string;
 }
 
 export async function sendInvoice(opts: {
-  chat_id: number; title: string; description: string; payload: string;
-  currency: 'XTR'; prices: { label: string; amount: number }[];
+  chat_id: number;
+  title: string;
+  description: string;
+  payload: string;
+  currency: 'XTR';
+  prices: { label: string; amount: number }[];
 }) {
   const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendInvoice`, {
-    method: 'POST', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ ...opts })
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ ...opts }) // no provider_token for XTR
   });
   const data = await res.json();
   if (!data.ok) throw new Error(data.description || 'sendInvoice failed');
