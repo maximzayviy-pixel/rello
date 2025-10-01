@@ -38,10 +38,10 @@ export default function Home() {
     const j = await r.json();
     if (!j.ok) return;
     const tg = window.Telegram?.WebApp;
-    const invoiceUrl = j?.invoice?.invoice_url || j?.invoice?.link || j?.invoice?.url;
+    const invoiceUrl = j?.link || j?.invoice?.invoice_url || j?.invoice?.link || j?.invoice?.url;
     const slug = j?.invoice?.slug || j?.invoice?.provider_data || j?.invoice?.start_parameter;
     // Открываем самым совместимым способом
-    if (tg?.openInvoice && (slug || invoiceUrl)) {
+    if (tg?.openInvoice && (invoiceUrl || slug)) {
       try { await tg.openInvoice(slug || invoiceUrl); return; } catch {}
     }
     if (invoiceUrl) window.open(invoiceUrl, '_blank');
