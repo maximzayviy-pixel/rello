@@ -1,0 +1,1 @@
+Ensure app/page.tsx uses j.link first: const invoiceUrl = j?.link || j?.invoice?.invoice_url || j?.invoice?.link || j?.invoice?.url;
