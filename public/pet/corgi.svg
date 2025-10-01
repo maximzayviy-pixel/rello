@@ -1,13 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
-  <circle cx="100" cy="100" r="96" fill="#fff3e0" stroke="#ffcc80" stroke-width="8"/>
-  <g transform="translate(30,35)">
-    <ellipse cx="70" cy="80" rx="50" ry="40" fill="#ffb74d" stroke="#ef6c00" stroke-width="4"/>
-    <circle cx="50" cy="70" r="8" fill="#3e2723"/>
-    <circle cx="90" cy="70" r="8" fill="#3e2723"/>
-    <path d="M60 90 Q70 100 80 90" stroke="#3e2723" stroke-width="4" fill="none" stroke-linecap="round"/>
-    <path d="M30 35 l25 -20 l10 25 z" fill="#ffb74d" stroke="#ef6c00" stroke-width="3"/>
-    <path d="M120 35 l-25 -20 l-10 25 z" fill="#ffb74d" stroke="#ef6c00" stroke-width="3"/>
-    <circle cx="70" cy="85" r="6" fill="#d84315"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff7ed"/>
+      <stop offset="1" stop-color="#fde68a"/>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="320" height="320" rx="24" fill="url(#g)"/>
+  <!-- cute corgi centered -->
+  <g transform="translate(60,70)">
+    <ellipse cx="100" cy="120" rx="95" ry="70" fill="#ffb74d" stroke="#e67e22" stroke-width="6"/>
+    <circle cx="70" cy="115" r="10" fill="#3e2723"/>
+    <circle cx="130" cy="115" r="10" fill="#3e2723"/>
+    <path d="M85 140 Q100 150 115 140" stroke="#3e2723" stroke-width="6" fill="none" stroke-linecap="round"/>
+    <path d="M38 60 l35 -28 l12 34 z" fill="#ffb74d" stroke="#e67e22" stroke-width="4"/>
+    <path d="M162 60 l-35 -28 l-12 34 z" fill="#ffb74d" stroke="#e67e22" stroke-width="4"/>
+    <circle cx="100" cy="130" r="9" fill="#d84315"/>
   </g>
-  <text x="100" y="185" text-anchor="middle" font-family="Arial" font-size="14" fill="#6b7280">Rello the Corgi</text>
 </svg>
