@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <circle cx="100" cy="100" r="96" fill="#fff3e0" stroke="#ffcc80" stroke-width="8"/>
+  <g transform="translate(30,35)">
+    <ellipse cx="70" cy="80" rx="50" ry="40" fill="#ffb74d" stroke="#ef6c00" stroke-width="4"/>
+    <circle cx="50" cy="70" r="8" fill="#3e2723"/>
+    <circle cx="90" cy="70" r="8" fill="#3e2723"/>
+    <path d="M60 90 Q70 100 80 90" stroke="#3e2723" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <path d="M30 35 l25 -20 l10 25 z" fill="#ffb74d" stroke="#ef6c00" stroke-width="3"/>
+    <path d="M120 35 l-25 -20 l-10 25 z" fill="#ffb74d" stroke="#ef6c00" stroke-width="3"/>
+    <circle cx="70" cy="85" r="6" fill="#d84315"/>
+  </g>
+  <text x="100" y="185" text-anchor="middle" font-family="Arial" font-size="14" fill="#6b7280">Rello the Corgi</text>
+</svg>
